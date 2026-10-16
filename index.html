@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Выбор иконок Fluent</title>
+<style>
+/* Раскладка: липкая шапка и лента разделов, ниже строки «старая иконка | кандидаты Fluent»; режим сравнения — таблица по рецензентам. */
+:root {
+  --bg:#f4f5f7; --card:#ffffff; --fg:#1b1f24; --mut:#5d6672; --line:#d7dce2; --soft:#e9ecf0; --hover:#eef1f5;
+  --acc:#0b62c4; --acc-soft:#e3eefb; --on-acc:#ffffff; --ok:#1a7f37; --ok-soft:#e2f4e7;
+  --warn:#a85a00; --warn-soft:#fff1de; --warn-line:#ecc58f; --bad:#b3261e; --bad-soft:#fde4e2;
+  --paper:#ffffff; --night:#1c1c1e;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#0f1114; --card:#181b20; --fg:#e8ebef; --mut:#98a1ad; --line:#2f353d; --soft:#252a31; --hover:#20252b;
+  --acc:#5aa2f0; --acc-soft:#17304d; --on-acc:#0b1320; --ok:#4cc26b; --ok-soft:#173222;
+  --warn:#f0a24b; --warn-soft:#3a2a14; --warn-line:#6b4a1f; --bad:#ff8f87; --bad-soft:#40201e; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg:#0f1114; --card:#181b20; --fg:#e8ebef; --mut:#98a1ad; --line:#2f353d; --soft:#252a31; --hover:#20252b;
+  --acc:#5aa2f0; --acc-soft:#17304d; --on-acc:#0b1320; --ok:#4cc26b; --ok-soft:#173222;
+  --warn:#f0a24b; --warn-soft:#3a2a14; --warn-line:#6b4a1f; --bad:#ff8f87; --bad-soft:#40201e; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin:0; font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+button, select, input, textarea { font:inherit; color:var(--fg); }
+button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible { outline:2px solid var(--acc); outline-offset:2px; }
+.gx { padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+header { position:sticky; top:env(safe-area-inset-top, 0px); z-index:5; background:var(--card); border-bottom:1px solid var(--line); padding-block:10px; display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center; }
+header h1 { font-size:16px; margin:0 6px 0 0; }
+header label { display:inline-flex; gap:6px; align-items:center; color:var(--mut); }
+header select, header button, header input[type=search], header input[type=text], .btn { padding:5px 9px; border:1px solid var(--line); border-radius:6px; background:var(--card); }
+header button, .btn { cursor:pointer; } header button:hover, .btn:hover { background:var(--hover); }
+header button.primary { background:var(--acc); color:var(--on-acc); border-color:var(--acc); }
+header button.primary:hover { filter:brightness(1.08); }
+.tabs { display:inline-flex; border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+.tabs button { border:0; border-radius:0; } .tabs button.on { background:var(--acc); color:var(--on-acc); }
+#progress { font-weight:600; } .bar { width:140px; height:8px; background:var(--soft); border-radius:4px; overflow:hidden; display:inline-block; }
+.bar i { display:block; height:100%; background:var(--ok); }
+#who { display:none; } #who.on { display:inline-flex; }
+#sync { font-size:12px; color:var(--mut); } #sync.ok { color:var(--ok); } #sync.bad { color:var(--bad); }
+.gate { max-width:520px; margin:40px auto; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; }
+.gate h2 { margin:0 0 8px; font-size:17px; } .gate p { margin:6px 0; color:var(--mut); } .gate p.err { color:var(--bad); min-height:1.4em; }
+.gate form { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; } .gate input { flex:1; min-width:200px; padding:7px 9px; border:1px solid var(--line); border-radius:6px; background:var(--card); }
+.gate .btn { padding:7px 12px; } .gate .alt { margin-top:14px; }
+.cmtbox { display:flex; flex-direction:column; gap:2px; }
+#who input { width:150px; }
+#banner { padding-block:6px; font-size:12px; background:var(--warn-soft); color:var(--warn); border-bottom:1px solid var(--warn-line); display:none; }
+#banner.on { display:block; }
+#sections { display:flex; flex-wrap:nowrap; overflow-x:auto; white-space:nowrap; gap:6px; padding-block:8px; background:var(--card); border-bottom:1px solid var(--line); position:sticky; top:calc(var(--hh, 52px) + env(safe-area-inset-top, 0px)); z-index:4; }
+#sections button { flex:none; font-size:12px; padding:3px 10px; border:1px solid var(--line); border-radius:14px; background:transparent; cursor:pointer; }
+#sections button:hover { background:var(--hover); }
+#sections button.on { background:var(--acc); border-color:var(--acc); color:var(--on-acc); } #sections button small { opacity:.75; }
+main { padding-block:16px; max-width:1500px; margin:0 auto; }
+h2.secttl { margin:22px 0 8px; font-size:17px; text-wrap:balance; } h2.secttl small { color:var(--mut); font-weight:400; font-size:13px; }
+.row { display:grid; grid-template-columns:minmax(0,420px) minmax(0,1fr); gap:16px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:12px; }
+.row.done { border-left:4px solid var(--ok); } .row.none { border-left:4px solid var(--warn); }
+.old, .new { min-width:0; }
+.old h3 { margin:0 0 4px; font-size:15px; overflow-wrap:anywhere; }
+.badges span { display:inline-block; font-size:11px; padding:1px 7px; border-radius:9px; background:var(--soft); margin:0 4px 4px 0; }
+.badges .cfg { background:var(--warn-soft); color:var(--warn); } .badges .miss, .badges .unused { background:var(--bad-soft); color:var(--bad); }
+.badges .also { background:var(--acc-soft); color:var(--acc); }
+.tiles { display:flex; gap:8px; margin:8px 0; }
+.tile { min-width:84px; min-height:84px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:8px; padding:8px; }
+.tile.light { background:var(--paper); } .tile.dark { background:var(--night); border-color:var(--night); }
+.tile img { max-width:none; } .tile.dark img.tpl { filter:invert(1); }
+.cap { font-size:11px; color:var(--mut); }
+details summary { cursor:pointer; color:var(--acc); font-size:12px; } details ul { margin:4px 0; padding-left:18px; font-size:11px; color:var(--mut); overflow-wrap:anywhere; }
+.cfgnote { font-size:12px; background:var(--warn-soft); border:1px solid var(--warn-line); border-radius:6px; padding:6px 8px; margin-top:6px; overflow-wrap:anywhere; }
+.cands { display:flex; flex-wrap:wrap; gap:12px; }
+.cand { border:1px solid var(--line); border-radius:8px; padding:8px; }
+.cand h4 { margin:0 0 6px; font-size:12px; font-family:ui-monospace,Menlo,monospace; overflow-wrap:anywhere; }
+.variants { display:grid; grid-template-columns:repeat(3,auto); gap:4px; }
+.var { display:flex; flex-direction:column; align-items:center; gap:2px; padding:5px 6px; border:1px solid transparent; border-radius:6px; cursor:pointer; min-width:56px; }
+.var:hover { background:var(--hover); } .var.sel { border-color:var(--acc); background:var(--acc-soft); } .var.na { opacity:.35; cursor:not-allowed; }
+.var .img { min-height:28px; min-width:28px; display:flex; align-items:center; justify-content:center; background:var(--paper); border-radius:4px; padding:2px 3px; color:#666; }
+.var small { font-size:10px; color:var(--mut); } .var input { margin:0; }
+.extra { display:flex; flex-wrap:wrap; gap:12px; margin-top:10px; align-items:flex-start; }
+.extra label.none { display:flex; gap:6px; align-items:center; padding:6px 10px; border:1px solid var(--line); border-radius:8px; cursor:pointer; }
+.extra label.none.sel { border-color:var(--warn); background:var(--warn-soft); }
+.extra input[type=text], .extra textarea { padding:5px 8px; border:1px solid var(--line); border-radius:6px; background:var(--card); width:min(260px,100%); }
+.extra textarea { width:min(340px,100%); height:54px; resize:vertical; }
+.results { display:flex; gap:4px; flex-wrap:wrap; margin-top:4px; max-width:420px; }
+.results button { font-size:11px; border:1px solid var(--line); border-radius:10px; background:var(--card); cursor:pointer; padding:1px 7px; }
+.sect { margin:28px 0 8px; } .dyn { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-bottom:8px; }
+.dyn .sym { display:inline-flex; flex-direction:column; align-items:center; margin:4px 8px 4px 0; font-size:10px; color:var(--mut); }
+.dyn .sym img { filter:none; } @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .dyn .sym img { filter:invert(1); } } :root[data-theme="dark"] .dyn .sym img { filter:invert(1); }
+/* сравнение */
+.cmp { overflow-x:auto; }
+.cmprow { display:grid; grid-template-columns:minmax(180px,240px) repeat(var(--n,1), minmax(170px,1fr)); gap:0; border:1px solid var(--line); border-radius:10px; background:var(--card); margin-bottom:8px; min-width:min-content; }
+.cmprow > div { padding:8px 10px; border-left:1px solid var(--line); min-width:0; } .cmprow > div:first-child { border-left:0; }
+.cmprow.diff { border-color:var(--warn); box-shadow:inset 4px 0 0 var(--warn); } .cmprow.agree { box-shadow:inset 4px 0 0 var(--ok); }
+.cmphead { background:var(--soft); font-weight:600; margin-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; }
+.cmphead small { display:block; color:var(--mut); font-weight:400; }
+.cmpname { display:flex; gap:8px; align-items:center; }
+.cmpname .tile { min-width:48px; min-height:48px; padding:4px; }
+.cmpname b { overflow-wrap:anywhere; font-size:13px; } .cmpname button { all:unset; cursor:pointer; color:var(--acc); font-size:11px; }
+.cell { display:flex; flex-direction:column; gap:3px; } .cell .pick { display:flex; gap:6px; align-items:center; }
+.cell .img { background:var(--paper); border-radius:4px; padding:2px; display:flex; } .cell code { font-size:12px; overflow-wrap:anywhere; }
+.cell .none { color:var(--warn); } .cell .empty { color:var(--mut); } .cell .note { font-size:11px; color:var(--mut); font-style:italic; overflow-wrap:anywhere; }
+.status { font-size:11px; padding:1px 7px; border-radius:9px; display:inline-block; }
+.status.diff { background:var(--warn-soft); color:var(--warn); } .status.agree { background:var(--ok-soft); color:var(--ok); } .status.wait { background:var(--soft); color:var(--mut); }
+#toast { position:fixed; left:50%; transform:translateX(-50%); bottom:calc(16px + env(safe-area-inset-bottom, 0px)); background:var(--fg); color:var(--bg); padding:8px 14px; border-radius:8px; font-size:13px; max-width:90vw; z-index:9; display:none; }
+#toast.on { display:block; }
+[hidden] { display:none !important; }
+@media (max-width: 700px) { header { position:static; } #sections { top:env(safe-area-inset-top, 0px); } }
+@media (max-width: 900px) { .row { grid-template-columns:minmax(0,1fr); } }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition:width .25s; } }
+</style>
+</head>
+<body>
+<header class="gx">
+  <h1>Иконки → Fluent</h1>
+  <span class="tabs" id="tabs" hidden></span>
+  <span id="progress"></span><span class="bar"><i id="barfill" style="width:0"></i></span>
+  <span id="sync" role="status" hidden></span>
+  <label id="who">Рецензент <input type="text" id="reviewer" maxlength="40" placeholder="ваше имя"></label>
+  <label id="lbl-filter">Фильтр <select id="filter">
+    <option value="all">все</option><option value="open">не решено</option><option value="done">решено</option>
+    <option value="none">нет соответствия</option><option value="cfg">есть конфигурация символа</option></select></label>
+  <label id="lbl-cfilter" hidden>Фильтр <select id="cfilter">
+    <option value="diff">расхождения</option><option value="all">все</option><option value="agree">согласие</option><option value="wait">не все решили</option></select></label>
+  <label>Сортировка <select id="sort">
+    <option value="desc">по числу использований ↓</option><option value="asc">по числу использований ↑</option><option value="name">по имени</option></select></label>
+  <input type="search" id="q" placeholder="поиск по имени">
+  <button id="refresh" hidden title="Загрузить свежие выборы коллег">Обновить</button>
+  <button class="primary" id="export">Экспорт CSV</button>
+  <button id="import" title="Загрузить выборы из ранее экспортированного CSV">Импорт CSV</button>
+  <input type="file" id="importfile" accept=".csv,text/csv" hidden>
+  <button id="reset" title="Очистить все ваши решения">Сбросить</button>
+</header>
+<div id="banner" class="gx"></div>
+<nav id="sections" class="gx"></nav>
+<main class="gx">
+  <div id="list"></div>
+  <div id="compare" class="cmp" hidden></div>
+  <h2 class="sect" id="dyn-title"></h2>
+  <div id="dynamic"></div>
+</main>
+<div id="toast" role="status"></div>
+<script src="config.js"></script>
+<script>
+const STORE = 'icon-review-v1', SIZES = [16, 20, 24], STYLES = ['regular', 'filled'];
+const SECTION_ORDER = ['Почта', 'Календарь', 'Контакты', 'Файлы', 'Браузер', 'Ассистент', 'Мини-приложения', 'Чат', 'Росчат', 'Настройки',
+  'Меню и общие экраны', 'Общие (несколько разделов)', 'Общие / не определено', 'Не используется'];
+const NO_MATCH = 'НЕТ СООТВЕТСТВИЯ';
+const TABS = { owner: 'Моя', lead: 'Фируз', analyst: 'Анжелика' };
+const CFG = window.ICON_CONFIG || {};
+const cloud = !!(CFG.SUPABASE_URL && CFG.ANON_KEY);  // без config.js страница работает локально, как раньше
+let ui = { sec: 'all', view: 'pick', tab: 'owner' };
+try { ui = { ...ui, ...JSON.parse(localStorage.getItem('icon-review-ui') || '{}') }; } catch (e) {}
+if (TABS[location.hash.slice(1)]) ui.tab = location.hash.slice(1);
+if (!cloud || !TABS[ui.tab]) ui.tab = 'owner';
+const saveUi = () => { try { localStorage.setItem('icon-review-ui', JSON.stringify(ui)); } catch (e) {} };
+let PRIV = null, DATA, FLUENT = {}, FLUENT_LIST = [], CAND = {}, PREV = {}, ALL = null, state = {};
+// по вкладке: выборы, имя рецензента, состояние облака. Вкладка «Моя» хранится под прежним ключом, чтобы не потерять старые выборы
+const states = {}, names = {}, synced = {}, localOnly = {}, dirty = {}, syncState = {}, gateMsg = {}, connecting = {}, retryTimers = {};
+let REVIEWS = new Map(), writing = false, saveTimer = null;
+const storeKey = t => t === 'owner' ? STORE : STORE + '-' + t;
+const tsKey = t => storeKey(t) + '-ts', nameKey = t => t === 'owner' ? 'icon-review-name' : 'icon-review-name-' + t, codeKey = t => 'icon-review-code-' + t;
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const codeOf = t => lsGet(codeKey(t)) || '';
+function loadLocal(t) { try { return JSON.parse(lsGet(storeKey(t)) || '{}'); } catch (e) { return {}; } }
+function getName(t) { if (!(t in names)) names[t] = lsGet(nameKey(t)) || ''; return names[t]; }
+function useTab(t) { ui.tab = t; saveUi(); state = states[t] ||= loadLocal(t); $('#reviewer').value = getName(t); refreshSync(); }
+const $ = (s, r = document) => r.querySelector(s);
+const el = (t, a = {}, ...c) => { const e = document.createElement(t);
+  for (const [k, v] of Object.entries(a)) k === 'class' ? e.className = v : k.startsWith('on') ? e.addEventListener(k.slice(2), v) : e.setAttribute(k, v);
+  c.flat().forEach(x => e.append(x instanceof Node ? x : document.createTextNode(x))); return e; };
+let toastTimer;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 4500); }
+
+/** Имя для показа: локально (есть private.json) — реальное имя ассета + псевдоним, публично — только псевдоним. */
+function displayName(row) {
+  const real = PRIV?.rows[row.key]?.real_name;
+  return real && real !== row.icon ? `${real}  ·  ${row.icon}` : row.icon;
+}
+
+function st(key) { return state[key] || (state[key] = { choice: null, custom: '', comment: '' }); }
+const isDone = key => !!(state[key] && state[key].choice);
+const isNone = key => isDone(key) && state[key].choice.type === 'none';
+const sameChoice = (c, n, size, style) => c && c.type !== 'none' && c.name === n && c.size === size && c.style === style;
+
+// ---------- сохранение: localStorage всегда, плюс облако (Supabase RPC) с задержкой, по одной записи за раз
+const hasData = o => Object.values(o || {}).some(v => v && (v.choice || v.comment || v.custom));
+const cloudOn = t => cloud && !localOnly[t] && !!codeOf(t);
+function save() {
+  lsSet(storeKey(ui.tab), JSON.stringify(state)); lsSet(tsKey(ui.tab), String(Date.now()));
+  markDirty(ui.tab);
+}
+function markDirty(t) {
+  if (!cloudOn(t)) return;
+  dirty[t] = true;
+  if (synced[t]) { setSync(t, 'saving', 'Сохраняю…'); clearTimeout(saveTimer); saveTimer = setTimeout(flushRemote, 700); }
+}
+function choicesOf(t) {
+  const out = {};
+  for (const [k, v] of Object.entries(states[t] || {})) if (v && (v.choice || v.comment || v.custom)) out[k] = v;
+  return out;
+}
+/** Вызов SQL-функции Supabase по REST. Для `forbidden` (неверный код) ставит e.forbidden, сетевые ошибки пробрасываются как есть. */
+async function rpc(fn, body) {
+  const r = await fetch(`${CFG.SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/rpc/${fn}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CFG.ANON_KEY }, body: JSON.stringify(body) });
+  if (!r.ok) {
+    let j = {}; try { j = await r.json(); } catch (e) {}
+    const err = new Error(j.message || String(r.status)); err.status = r.status; err.forbidden = j.code === '42501' || j.message === 'forbidden'; err.tooBig = j.code === '23514'; throw err;
+  }
+  return r.json();
+}
+async function flushRemote() {
+  if (writing) return;
+  const t = Object.keys(dirty).find(k => dirty[k] && synced[k]);
+  if (!t) return;
+  writing = true; dirty[t] = false;
+  let failed = false;
+  try {
+    await rpc('save_review', { p_tab: t, p_code: codeOf(t), p_name: getName(t) || TABS[t], p_choices: choicesOf(t) });
+    if (!dirty[t]) setSync(t, 'ok', 'Сохранено в облаке');
+  } catch (e) {
+    if (e.forbidden) rejectCode(t);
+    else if (e.tooBig) setSync(t, 'bad', 'Слишком большой объём данных, не сохранено в облаке');
+    else { failed = true; dirty[t] = true; setSync(t, 'bad', 'Не удалось сохранить в облаке, повторю'); clearTimeout(saveTimer); saveTimer = setTimeout(flushRemote, 5000); }
+  }
+  writing = false;
+  if (!failed && Object.keys(dirty).some(k => dirty[k] && synced[k])) { clearTimeout(saveTimer); saveTimer = setTimeout(flushRemote, 700); }
+}
+function setSync(t, kind, text) { syncState[t] = { kind, text }; if (t === ui.tab) refreshSync(); }
+function refreshSync() {
+  const box = $('#sync'), s = cloudOn(ui.tab) ? syncState[ui.tab] : localOnly[ui.tab] ? { kind: '', text: 'Только в этом браузере' } : null;
+  box.hidden = !cloud || !s; if (!s) return;
+  box.textContent = s.text; box.className = s.kind === 'ok' ? 'ok' : s.kind === 'bad' ? 'bad' : '';
+}
+function setBanner(msg) { const b = $('#banner'); b.textContent = msg; b.classList.toggle('on', !!msg); }
+
+/** Подтянуть вкладку из облака: сначала проверка кода, затем слияние (побеждают более свежие данные), дальше разрешена запись. */
+async function connectTab(t) {
+  if (!cloudOn(t) || connecting[t]) return 'busy';
+  connecting[t] = true; clearTimeout(retryTimers[t]); setSync(t, 'wait', 'Подключаюсь к облаку…');
+  try {
+    mergeRemote(t, await rpc('get_review', { p_tab: t, p_code: codeOf(t) }));
+    synced[t] = true; connecting[t] = false;
+    setSync(t, dirty[t] ? 'wait' : 'ok', dirty[t] ? 'Сохраняю…' : 'Сохранено в облаке');
+    if (dirty[t]) flushRemote();
+    renderTabs();
+    return 'ok';
+  } catch (e) {
+    connecting[t] = false;
+    if (e.forbidden) { rejectCode(t); return 'forbidden'; }
+    setSync(t, 'bad', 'Нет связи с облаком, работаю локально (повторю)');
+    retryTimers[t] = setTimeout(() => connectTab(t), 10000);
+    return 'offline';
+  }
+}
+function mergeRemote(t, r) {
+  const remote = r?.choices || {}, local = states[t] ||= loadLocal(t);
+  if (r?.reviewer_name && !getName(t)) { names[t] = r.reviewer_name; lsSet(nameKey(t), r.reviewer_name); }
+  if (hasData(remote)) {
+    const localTs = Number(lsGet(tsKey(t)) || 0), remoteTs = Date.parse(r.updated_at) || 0;
+    if (!hasData(local) || remoteTs >= localTs) {
+      if (hasData(local)) lsSet(storeKey(t) + '-prev', JSON.stringify(local));  // страховка: прежние локальные выборы остаются в -prev
+      states[t] = remote; lsSet(storeKey(t), JSON.stringify(remote));
+    } else dirty[t] = true;
+  } else if (hasData(local)) dirty[t] = true;
+  if (t === ui.tab) { state = states[t]; $('#reviewer').value = getName(t); render(); }
+}
+/** Код не подошёл (в т.ч. сохранённый ранее): забываем его и возвращаем форму ввода. */
+function rejectCode(t) {
+  try { localStorage.removeItem(codeKey(t)); } catch (e) {}
+  synced[t] = false; dirty[t] = false; connecting[t] = false;
+  gateMsg[t] = 'Код не подошёл. Проверьте, что это код именно для вкладки «' + TABS[t] + '», и введите его ещё раз.';
+  if (ui.view === 'cmp' && !cmpAllowed()) setView('pick');
+  renderTabs(); if (t === ui.tab) render(); refreshSync();
+}
+const gateNeeded = t => cloud && !codeOf(t) && !localOnly[t];
+const cmpAllowed = () => cloud && Object.keys(TABS).some(k => !!codeOf(k));
+/** Вкладка, под кодом которой работает этот пользователь: текущая, если для неё введён код, иначе первая с кодом. */
+const myTab = () => codeOf(ui.tab) ? ui.tab : Object.keys(TABS).find(k => codeOf(k)) || ui.tab;
+
+function gateNode(t) {
+  const err = el('p', { class: 'err', role: 'alert' }, gateMsg[t] || '');
+  const input = el('input', { type: 'password', autocomplete: 'off', placeholder: 'код доступа', 'aria-label': 'Код доступа' });
+  const btn = el('button', { class: 'btn primary', type: 'submit' }, 'Войти');
+  const form = el('form', {}, input, btn);
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const code = input.value.trim(); if (!code) return;
+    btn.disabled = true; err.textContent = ''; delete gateMsg[t];
+    lsSet(codeKey(t), code);
+    const res = await connectTab(t);
+    if (res === 'offline') {
+      try { localStorage.removeItem(codeKey(t)); } catch (er) {}
+      clearTimeout(retryTimers[t]); setSync(t, '', '');
+      err.textContent = 'Не удалось связаться с облаком. Проверьте интернет и попробуйте ещё раз.'; btn.disabled = false;
+    }
+  });
+  const local = el('button', { class: 'btn alt', type: 'button', onclick: () => { localOnly[t] = true; renderTabs(); refreshSync(); render(); } }, 'Работать без облака (только в этом браузере)');
+  return el('div', { class: 'gate' }, el('h2', {}, `Вкладка «${TABS[t]}»`),
+    el('p', {}, 'Введите код доступа для этой вкладки. Код вам передали лично; он запомнится в этом браузере.'), form, err, local);
+}
+
+function renderTabs() {
+  const box = $('#tabs'); box.hidden = !cloud; $('#who').classList.toggle('on', cloud);
+  $('#refresh').hidden = !(cloud && ui.view === 'cmp');
+  if (!cloud) return;
+  box.replaceChildren(...Object.entries(TABS).map(([k, label]) => el('button', { class: ui.view === 'pick' && ui.tab === k ? 'on' : '', onclick: () => switchTab(k) }, label)),
+    ...(cmpAllowed() ? [el('button', { class: ui.view === 'cmp' ? 'on' : '', onclick: openCompare }, 'Сравнение')] : []));
+}
+function switchTab(t) {
+  useTab(t); setView('pick');
+  if (cloudOn(t) && !synced[t]) connectTab(t);
+  render();
+}
+async function openCompare() { setView('cmp'); render(); await loadCompare(); }
+async function loadCompare() {
+  const t = myTab();
+  try { REVIEWS = new Map((await rpc('list_reviews', { p_tab: t, p_code: codeOf(t) })).map(r => [r.tab, r])); render(); }
+  catch (e) { if (e.forbidden) rejectCode(t); else toast('Не удалось загрузить выборы коллег. Проверьте интернет и нажмите «Обновить».'); }
+}
+
+// ---------- SVG Fluent
+function svgData(name, size, style) {
+  const k = `${size}_${style}`;
+  const v = CAND[name]?.[k] ?? ALL?.[name]?.[k];
+  if (v) return v;
+  const p = PREV[name]; return p && p[0] === style && p[1] === size ? p[2] : null;
+}
+function svgImg(name, size, style) {
+  const b = svgData(name, size, style); if (!b) return null;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none">${b}</svg>`;
+  return el('img', { src: 'data:image/svg+xml,' + encodeURIComponent(svg), width: size, height: size, alt: name });
+}
+
+function variantsBlock(row, name, group) {
+  const box = el('div', { class: 'variants' }), e = FLUENT[name];
+  for (const style of STYLES) for (const size of SIZES) {
+    const exists = e && e.sizes.includes(size) && e.styles.includes(style);
+    const img = exists ? svgImg(name, size, style) : null, s = st(row.key);
+    const sel = sameChoice(s.choice, name, size, style);
+    box.append(el('label', { class: 'var' + (exists ? '' : ' na') + (sel ? ' sel' : ''), title: `${name} ${size} ${style}` + (exists && !img ? ' (превью нет в публичной версии)' : '') },
+      el('span', { class: 'img' }, img || (exists ? '·' : '—')),
+      el('input', { type: 'radio', name: 'r-' + row.key, ...(exists ? {} : { disabled: '' }), ...(sel ? { checked: '' } : {}),
+        onchange: () => { s.choice = { type: group, name, size, style }; save(); render(); } }),
+      el('small', {}, `${style === 'regular' ? 'reg' : 'fill'} ${size}`)));
+  }
+  return box;
+}
+
+function renderRow(row) {
+  const s = st(row.key), done = isDone(row.key), none = isNone(row.key);
+  const badges = el('div', { class: 'badges' }, el('span', {}, row.source_type), el('span', {}, `использований: ${row.usage_count}`), ...row.kinds.map(k => el('span', {}, k)));
+  if (row.has_config) badges.append(el('span', { class: 'cfg' }, 'конфигурация символа'));
+  const others = Object.keys(row.sections).filter(x => x !== row.section);
+  if (row.unused) badges.append(el('span', { class: 'unused', title: 'в коде нет вызовов этой иконки' }, 'не используется'));
+  else if (others.length || row.section.startsWith('Общие')) badges.append(el('span', { class: 'also', title: Object.entries(row.sections).map(([k, v]) => `${k}: ${v}`).join(', ') },
+    'экраны: ' + Object.keys(row.sections).join(', ')));
+  if (!row.old) badges.append(el('span', { class: 'miss' }, 'нет старой картинки'));
+  const old = el('div', { class: 'old' }, el('h3', {}, displayName(row)), badges);
+  if (row.old) {
+    const mk = cls => el('div', { class: 'tile ' + cls }, el('img', { src: row.old.png3x, width: row.old.w, height: row.old.h, class: row.old.template ? 'tpl' : '', alt: row.icon }));
+    old.append(el('div', { class: 'tiles' }, mk('light'), mk('dark')),
+      el('div', { class: 'cap' }, `${Math.round(row.old.w * 10) / 10}×${Math.round(row.old.h * 10) / 10} pt · ${row.size_source}`));
+  } else old.append(el('div', { class: 'cap' }, 'не удалось отрисовать (для SF Symbol имя отсутствует в системе)'));
+  if (row.has_config) {
+    const pc = PRIV?.rows[row.key]?.configs;
+    old.append(el('div', { class: 'cfgnote' }, el('b', {}, 'Конфигурация: '),
+      ...(pc ? pc.map(c => el('div', {}, `${c.at} — ${JSON.stringify(c.config)}${c.source.length ? ' · ' + c.source.join(' | ') : ''}`))
+             : [el('div', {}, JSON.stringify(row.config))])));
+  }
+  const pf = PRIV?.rows[row.key]?.files;
+  old.append(pf ? el('details', {}, el('summary', {}, `файлы (${pf.length})`), el('ul', {}, ...pf.map(f => el('li', {}, f))))
+                : el('div', { class: 'cap' }, `файлов с использованием: ${row.files_count}`));
+
+  const right = el('div', { class: 'new' }), cands = el('div', { class: 'cands' });
+  if (!row.suggest.length) cands.append(el('div', { class: 'cap' }, 'автоматических кандидатов нет, воспользуйтесь полем поиска'));
+  row.suggest.forEach(c => cands.append(el('div', { class: 'cand' }, el('h4', {}, c.name), variantsBlock(row, c.name, 'cand'))));
+  if (s.custom && FLUENT[s.custom] && !row.suggest.some(c => c.name === s.custom)) cands.append(el('div', { class: 'cand' }, el('h4', {}, s.custom + ' (своё)'), variantsBlock(row, s.custom, 'custom')));
+  right.append(cands);
+
+  const results = el('div', { class: 'results' });
+  const input = el('input', { type: 'text', id: 'own-' + row.key, placeholder: 'своё имя Fluent, напр. mail_inbox', value: s.custom || '', 'aria-label': 'Своё имя Fluent' });
+  const pickCustom = n => { s.custom = n; save(); render(); };
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase().replace(/[\s-]+/g, '_'); results.replaceChildren();
+    if (!q) return;
+    FLUENT_LIST.filter(n => n.includes(q)).slice(0, 10).forEach(n => results.append(el('button', { onclick: () => pickCustom(n) }, n)));
+  });
+  input.addEventListener('keydown', e => { if (e.key === 'Enter' && FLUENT[input.value.trim()]) pickCustom(input.value.trim()); });
+  const noneLabel = el('label', { class: 'none' + (none ? ' sel' : '') },
+    el('input', { type: 'radio', name: 'r-' + row.key, ...(none ? { checked: '' } : {}), onchange: () => { s.choice = { type: 'none' }; save(); render(); } }), 'нет соответствия');
+  const clear = el('button', { class: 'btn', onclick: () => { s.choice = null; save(); render(); } }, 'снять выбор');
+  const comment = el('textarea', { id: 'cm-' + row.key, placeholder: 'комментарий', 'aria-label': 'Комментарий' }, s.comment || '');
+  let ct; comment.addEventListener('input', () => { s.comment = comment.value; clearTimeout(ct); ct = setTimeout(save, 400); });
+  const commentBox = el('div', { class: 'cmtbox' }, comment, el('span', { class: 'cap' }, 'Не указывайте названия файлов и классов проекта.'));
+  right.append(el('div', { class: 'extra' }, noneLabel, el('div', {}, input, results), commentBox, clear));
+  return el('section', { class: 'row' + (none ? ' none' : done ? ' done' : '') }, old, right);
+}
+
+function visible() {
+  const f = $('#filter').value, q = $('#q').value.trim().toLowerCase();
+  const rows = DATA.rows.filter(r => {
+    if (ui.view === 'pick') {
+      if (f === 'open' && isDone(r.key)) return false;
+      if (f === 'done' && !isDone(r.key)) return false;
+      if (f === 'none' && !isNone(r.key)) return false;
+      if (f === 'cfg' && !r.has_config) return false;
+    }
+    return !q || displayName(r).toLowerCase().includes(q) || (PRIV?.rows[r.key]?.files || []).some(x => x.toLowerCase().includes(q));
+  });
+  const so = $('#sort').value;
+  rows.sort((a, b) => so === 'name' ? displayName(a).localeCompare(displayName(b)) : so === 'asc' ? a.usage_count - b.usage_count : b.usage_count - a.usage_count);
+  return rows;
+}
+
+function renderSections() {
+  const nav = $('#sections'), mk = (label, key, rows) => el('button', { class: ui.sec === key ? 'on' : '', onclick: () => { ui.sec = key; saveUi(); render(); scrollTo(0, 0); } },
+    label + ' ', el('small', {}, `${rows.filter(r => isDone(r.key)).length}/${rows.length}`));
+  nav.replaceChildren(mk('Все разделы', 'all', DATA.rows), ...SECTION_ORDER.filter(s => DATA.rows.some(r => r.section === s)).map(s => mk(s, s, DATA.rows.filter(r => r.section === s))));
+}
+
+function updateProgress() {
+  const total = DATA.rows.length, done = DATA.rows.filter(r => isDone(r.key)).length, none = DATA.rows.filter(r => isNone(r.key)).length;
+  $('#progress').textContent = `Решено ${done} / ${total} (нет соответствия: ${none})`;
+  $('#barfill').style.width = (100 * done / total) + '%';
+}
+
+// ---------- сравнение рецензентов
+function reviewers() {
+  return Object.keys(TABS).map(t => {
+    const d = REVIEWS.get(t), mine = t === myTab();
+    return { id: t, mine, name: (mine ? getName(t) : d?.reviewer_name) || TABS[t], choices: mine ? (states[t] ||= loadLocal(t)) : d?.choices || {} };  // свои правки видны сразу, до ответа облака
+  });
+}
+const choiceOf = (rv, key) => { const c = rv.choices[key]?.choice; return c || null; };
+const choiceSig = c => c ? (c.type === 'none' ? 'none' : `${c.name}|${c.size}|${c.style}`) : null;
+function rowStatus(rvs, key) {
+  const sigs = rvs.map(r => choiceSig(choiceOf(r, key))).filter(Boolean);
+  if (new Set(sigs).size > 1) return 'diff';
+  return sigs.length && sigs.length === rvs.length ? 'agree' : 'wait';
+}
+const STATUS_LABEL = { diff: 'расхождение', agree: 'согласие', wait: 'не все решили' };
+
+function renderCompare() {
+  const box = $('#compare'), rvs = reviewers(), f = $('#cfilter').value, rows = visible();
+  box.style.setProperty('--n', Math.max(rvs.length, 1));
+  const nodes = [];
+  const headRow = () => el('div', { class: 'cmprow cmphead' }, el('div', {}, 'Иконка', el('small', {}, 'старая')),
+    ...rvs.map(r => el('div', {}, r.name + (r.mine ? ' (вы)' : ''), el('small', {}, `решено ${DATA.rows.filter(x => choiceOf(r, x.key)).length} / ${DATA.rows.length}`))));
+  const order = SECTION_ORDER.filter(s => (ui.sec === 'all' || ui.sec === s) && rows.some(r => r.section === s));
+  let shown = 0;
+  order.forEach(s => {
+    const items = rows.filter(r => r.section === s).map(r => [r, rowStatus(rvs, r.key)]).filter(([, t]) => f === 'all' || f === t);
+    if (!items.length) return;
+    nodes.push(el('h2', { class: 'secttl' }, s + ' ', el('small', {}, `${items.length} из ${DATA.rows.filter(r => r.section === s).length}`)), headRow());
+    items.forEach(([r, status]) => {
+      shown++;
+      const tile = r.old ? el('div', { class: 'tile light' }, el('img', { src: r.old.png3x, width: Math.min(r.old.w, 36), alt: r.icon, class: r.old.template ? '' : '' })) : el('div', { class: 'tile light' }, '—');
+      const first = el('div', { class: 'cmpname' }, tile, el('div', {}, el('b', {}, displayName(r)), el('br'),
+        el('span', { class: 'status ' + status }, STATUS_LABEL[status]), ' ',
+        el('button', { onclick: () => { useTab(myTab()); setView('pick'); $('#q').value = r.icon; render(); scrollTo(0, 0); } }, 'изменить')));
+      const cells = rvs.map(rv => {
+        const c = choiceOf(rv, r.key), note = rv.choices[r.key]?.comment, cell = el('div', { class: 'cell' });
+        if (!c) cell.append(el('span', { class: 'empty' }, 'не выбрано'));
+        else if (c.type === 'none') cell.append(el('span', { class: 'none' }, 'нет соответствия'));
+        else cell.append(el('div', { class: 'pick' }, el('span', { class: 'img' }, svgImg(c.name, c.size, c.style) || ''), el('code', {}, `${c.name} · ${c.size} · ${c.style}`)));
+        if (note) cell.append(el('span', { class: 'note' }, note));
+        return el('div', {}, cell);
+      });
+      nodes.push(el('div', { class: 'cmprow ' + status }, first, ...cells));
+    });
+  });
+  if (!shown) nodes.push(el('p', { class: 'cap' }, rvs.length ? 'По этому фильтру ничего нет.' : 'Пока никто не сохранил выбор.'));
+  box.replaceChildren(...nodes);
+}
+
+function setView(v) {
+  if (v === 'cmp' && !cmpAllowed()) v = 'pick';
+  ui.view = v; saveUi();
+  $('#list').hidden = v !== 'pick'; $('#compare').hidden = v !== 'cmp';
+  $('#lbl-filter').hidden = v !== 'pick'; $('#lbl-cfilter').hidden = v !== 'cmp';
+  $('#dyn-title').hidden = $('#dynamic').hidden = v !== 'pick';
+  $('#import').hidden = $('#reset').hidden = v !== 'pick';
+  renderTabs();
+}
+
+function render() {
+  const y = scrollY, list = $('#list');
+  const gated = ui.view === 'pick' && gateNeeded(ui.tab);
+  $('#sections').hidden = gated; $('#dyn-title').hidden = $('#dynamic').hidden = ui.view !== 'pick' || gated;
+  if (ui.view === 'cmp' && cmpAllowed()) renderCompare();
+  else if (gated) list.replaceChildren(gateNode(ui.tab));
+  else {
+    const rows = visible(), nodes = [];
+    SECTION_ORDER.filter(s => (ui.sec === 'all' || ui.sec === s) && rows.some(r => r.section === s)).forEach(s => {
+      const all = DATA.rows.filter(r => r.section === s);
+      nodes.push(el('h2', { class: 'secttl' }, s + ' ', el('small', {}, `решено ${all.filter(r => isDone(r.key)).length} / ${all.length}`)));
+      rows.filter(r => r.section === s).forEach(r => nodes.push(renderRow(r)));
+    });
+    list.replaceChildren(...nodes);
+  }
+  renderSections(); updateProgress(); scrollTo(0, y);
+}
+
+function renderDynamic() {
+  $('#dyn-title').textContent = `Динамические имена (${DATA.dynamic.length}): не сопоставляются автоматически`;
+  const box = $('#dynamic');
+  DATA.dynamic.forEach(d => box.append(el('div', { class: 'dyn' },
+    el('b', {}, PRIV?.dynamic[d.id]?.icon || `Динамическое имя №${d.id}`), ` · ${d.source_type} · использований: ${d.usage_count}`,
+    el('div', { class: 'cap' }, 'Значения, найденные в коде эвристикой (возможен шум): ' + (d.symbols.length + d.assets.length ? '' : 'не найдены')),
+    el('div', {}, ...d.symbols.slice(0, 40).map(n => el('span', { class: 'sym' }, ...(PRIV ? [el('img', { src: `old/dynamic/${n}@2x.png`, width: 20, alt: n })] : []), n)),
+      ...d.assets.map((n, i) => el('span', { class: 'sym' }, '▫ ' + (PRIV?.dynamic[d.id]?.assets?.[i] ? PRIV.dynamic[d.id].assets[i] + ' · ' : '') + n))),
+    ...(PRIV ? [el('details', {}, el('summary', {}, `места использования (${PRIV.dynamic[d.id].usages.length})`), el('ul', {}, ...PRIV.dynamic[d.id].usages.map(f => el('li', {}, f))))] : []))));
+}
+
+// ---------- CSV
+function parseCsv(text) {
+  const rows = []; let cur = [], cell = '', q = false;
+  const src = text.replace(/^﻿/, '');
+  for (let i = 0; i < src.length; i++) { const c = src[i];
+    if (q) { if (c === '"') { if (src[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
+    else if (c === '"') q = true; else if (c === ',') { cur.push(cell); cell = ''; }
+    else if (c === '\n') { cur.push(cell.replace(/\r$/, '')); rows.push(cur); cur = []; cell = ''; } else cell += c; }
+  if (cell || cur.length) { cur.push(cell); rows.push(cur); }
+  return rows;
+}
+function csvCell(v) { v = String(v ?? ''); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+const toCsv = rows => '﻿' + rows.map(r => r.map(csvCell).join(',')).join('\n') + '\n';
+
+/** Строки по source_type + имени: по псевдониму и (при наличии private.json) по реальному имени ассета. */
+function byIconMap() {
+  const m = {};
+  DATA.rows.forEach(r => { m[r.source_type + '\u0000' + r.icon] = r; const real = PRIV?.rows[r.key]?.real_name; if (real) m[r.source_type + '\u0000' + real] = r; });
+  return m;
+}
+
+async function saveFile(filename, text) {
+  const a = el('a', { href: URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' })), download: filename });
+  document.body.append(a); a.click(); a.remove();
+}
+
+const choiceCols = (s) => { const c = s?.choice; return c && c.type !== 'none' ? [c.name, c.size, c.style] : ['', '', '']; };
+const commentOf = (s) => ((s?.choice?.type === 'none' ? NO_MATCH + (s.comment ? ': ' : '') : '') + (s?.comment || '')).replace(/\s*\n\s*/g, ' ');
+
+async function exportCsv() {
+  if (ui.view === 'cmp' && cmpAllowed()) return exportCompare();
+  // с private.json — исходный icons-unique.csv (пути, динамические строки) + колонка public_id; без него — CSV из публичных данных
+  const rows = PRIV ? parseCsv(PRIV.unique_csv)
+    : [['icon', 'source_type', 'usage_count', 'files', 'fluent_name', 'size', 'style']].concat(DATA.rows.map(r => [r.icon, r.source_type, r.usage_count, '', '', '', '']));
+  const head = rows[0], ix = n => head.indexOf(n);
+  if (ix('comment') < 0) head.push('comment');
+  if (ix('public_id') < 0) head.push('public_id');
+  const byIcon = byIconMap();
+  const out = [head].concat(rows.slice(1).filter(r => r.length > 1).map(r => {
+    const rec = byIcon[r[ix('source_type')] + '\u0000' + r[ix('icon')]], s = rec && state[rec.key];
+    while (r.length < head.length) r.push('');
+    if (rec) r[ix('public_id')] = rec.icon;
+    if (s) { [r[ix('fluent_name')], r[ix('size')], r[ix('style')]] = choiceCols(s); r[ix('comment')] = commentOf(s); }
+    return r;
+  }));
+  await saveFile('icons-unique.csv', toCsv(out));
+}
+
+async function exportCompare() {
+  const rvs = reviewers(), head = ['icon', 'source_type', 'section', 'status'];
+  rvs.forEach(r => head.push(`${r.name}: fluent_name`, `${r.name}: size`, `${r.name}: style`, `${r.name}: comment`));
+  const rows = DATA.rows.map(row => [row.icon, row.source_type, row.section, STATUS_LABEL[rowStatus(rvs, row.key)],
+    ...rvs.flatMap(r => [...choiceCols(r.choices[row.key]), commentOf(r.choices[row.key])])]);
+  await saveFile('icons-comparison.csv', toCsv([head, ...rows]));
+}
+
+/** Загружает выборы из экспортированного CSV (по public_id, иначе по source_type + icon); затрагивает только найденные строки. */
+async function importCsv(file) {
+  const rows = parseCsv(await file.text()), head = rows[0], ix = n => head.indexOf(n);
+  if (['icon', 'source_type', 'fluent_name'].some(n => ix(n) < 0)) { toast('Это не похоже на экспорт icons-unique.csv'); return; }
+  const byIcon = byIconMap();
+  let applied = 0; const skipped = [];
+  rows.slice(1).filter(r => r.length > 1).forEach(r => {
+    const pid = ix('public_id') >= 0 ? r[ix('public_id')] : '';
+    const rec = byIcon[r[ix('source_type')] + '\u0000' + (pid || r[ix('icon')])] || byIcon[r[ix('source_type')] + '\u0000' + r[ix('icon')]];
+    if (!rec) { if (!r[ix('icon')].startsWith('<dynamic')) skipped.push(r[ix('icon')]); return; }
+    const name = (r[ix('fluent_name')] || '').trim(), size = parseInt(r[ix('size')], 10), style = (r[ix('style')] || '').trim();
+    let comment = ix('comment') >= 0 ? (r[ix('comment')] || '') : '';
+    const s = st(rec.key); s.choice = null; s.custom = '';
+    if (comment.startsWith(NO_MATCH)) { s.choice = { type: 'none' }; comment = comment.slice(NO_MATCH.length).replace(/^:\s*/, ''); }
+    else if (name) {
+      const known = rec.suggest.some(c => c.name === name);
+      s.choice = { type: known ? 'cand' : 'custom', name, size, style };
+      if (!known) s.custom = name;
+    }
+    s.comment = comment; applied++;
+  });
+  save(); render();
+  toast(`Импортировано строк: ${applied}` + (skipped.length ? `. Не найдены на странице: ${skipped.slice(0, 8).join(', ')}${skipped.length > 8 ? '…' : ''}` : ''));
+}
+
+/** Выборы, сохранённые до введения псевдонимов, лежат под ключом из реального имени; переносим на новый ключ (нужен private.json). */
+function migrateLegacyKeys() {
+  if (!PRIV) return;
+  let moved = 0;
+  try { if (!localStorage.getItem(STORE + '-backup') && localStorage.getItem(STORE)) localStorage.setItem(STORE + '-backup', localStorage.getItem(STORE)); } catch (e) {}
+  DATA.rows.forEach(r => { const old = PRIV.rows[r.key]?.legacy_key;
+    if (old && old !== r.key && state[old]) { if (!state[r.key] || !state[r.key].choice) state[r.key] = state[old]; delete state[old]; moved++; } });
+  if (moved) save();
+}
+
+(async function init() {
+  const fetchJson = u => fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.json(); });
+  const [data, idx, cand, prev] = await Promise.all([fetchJson('data.json'), fetchJson('fluent-index.json'), fetchJson('fluent-candidates.json'), fetchJson('fluent-24.json')]);
+  DATA = data; CAND = cand; PREV = prev;
+  idx.forEach(([n, sizes, styles]) => FLUENT[n] = { name: n, sizes, styles }); FLUENT_LIST = idx.map(e => e[0]);
+  try { const pr = await fetch('private.json'); if (pr.ok) PRIV = await pr.json(); } catch (e) {}
+  if (PRIV) fetch('fluent-all.json').then(r => r.ok ? r.json() : null).then(j => { if (j) { ALL = j; render(); } }).catch(() => {});
+  ['filter', 'cfilter', 'sort'].forEach(id => $('#' + id).addEventListener('change', render));
+  $('#q').addEventListener('input', render);
+  $('#export').addEventListener('click', exportCsv);
+  $('#import').addEventListener('click', () => $('#importfile').click());
+  $('#importfile').addEventListener('change', e => { const f = e.target.files[0]; if (f) importCsv(f); e.target.value = ''; });
+  let armed = false;
+  $('#reset').addEventListener('click', e => {
+    if (!armed) { armed = true; e.target.textContent = 'Точно сбросить?'; setTimeout(() => { armed = false; e.target.textContent = 'Сбросить'; }, 3500); return; }
+    armed = false; e.target.textContent = 'Сбросить'; state = {}; save(); render(); toast('Ваши решения сброшены');
+  });
+  $('#refresh').addEventListener('click', loadCompare);
+  let nt; $('#reviewer').addEventListener('input', e => { const t = ui.tab; names[t] = e.target.value.trim(); lsSet(nameKey(t), names[t]); clearTimeout(nt); nt = setTimeout(() => { if (t === ui.tab) save(); }, 600); });
+  if (ui.sec !== 'all' && !DATA.rows.some(r => r.section === ui.sec)) ui.sec = 'all';
+  new ResizeObserver(() => { document.documentElement.style.setProperty('--hh', $('header').offsetHeight + 'px'); document.documentElement.style.setProperty('--nh', $('#sections').offsetHeight + 'px'); }).observe($('header'));
+  useTab(ui.tab); migrateLegacyKeys();
+  if (ui.view === 'cmp' && !cmpAllowed()) ui.view = 'pick';
+  setView(ui.view); render(); renderDynamic();
+  if (cloudOn(ui.tab)) connectTab(ui.tab);
+  if (ui.view === 'cmp') loadCompare();
+})();
+</script>
+</body>
+</html>
