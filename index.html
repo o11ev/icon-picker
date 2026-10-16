@@ -469,7 +469,7 @@ function renderCompare() {
       nodes.push(el('div', { class: 'cmprow ' + status }, first, ...cells));
     });
   });
-  if (!shown) nodes.push(el('p', { class: 'cap' }, rvs.length ? 'По этому фильтру ничего нет.' : 'Пока никто не сохранил выбор.'));
+  if (!shown) nodes.push(el('p', { class: 'cap' }, f === 'diff' ? 'Расхождений пока нет: у иконок, которые выбрали несколько человек, выбор совпадает, а у остальных решил не каждый. Переключите фильтр на «все», чтобы увидеть все выборы.' : 'По этому фильтру ничего нет.'));
   box.replaceChildren(...nodes);
 }
 
