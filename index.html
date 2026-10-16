@@ -151,7 +151,7 @@ try { ui = { ...ui, ...JSON.parse(localStorage.getItem('icon-review-ui') || '{}'
 if (TABS[location.hash.slice(1)]) ui.tab = location.hash.slice(1);
 if (!cloud || !TABS[ui.tab]) ui.tab = 'owner';
 const saveUi = () => { try { localStorage.setItem('icon-review-ui', JSON.stringify(ui)); } catch (e) {} };
-let PRIV = null, DATA, FLUENT = {}, FLUENT_LIST = [], CAND = {}, PREV = {}, ALL = null, state = {};
+let PRIV = null, DATA, FLUENT = {}, FLUENT_LIST = [], CAND = {}, PREV = {}, ALL = null, SHARDS = {}, shardLoading = {}, state = {};
 // по вкладке: выборы, имя рецензента, состояние облака. Вкладка «Моя» хранится под прежним ключом, чтобы не потерять старые выборы
 const states = {}, names = {}, synced = {}, localOnly = {}, dirty = {}, syncState = {}, gateMsg = {}, connecting = {}, retryTimers = {};
 let REVIEWS = new Map(), writing = false, saveTimer = null;
@@ -319,10 +319,23 @@ async function loadCompare() {
 }
 
 // ---------- SVG Fluent
+// Остальные иконки Fluent (не из кандидатов) лежат файлами fluent/<первая буква>.json и подгружаются по требованию
+const shardKey = name => /^[a-z]/.test(name) ? name[0] : '_';
+function ensureShard(name) {
+  const key = shardKey(name);
+  if (SHARDS[key] || shardLoading[key] || !FLUENT[name]) return;
+  shardLoading[key] = true;
+  fetch(`fluent/${key}.json`).then(r => r.ok ? r.json() : null).then(j => { if (j) { SHARDS[key] = j; rerenderWhenIdle(); } }).catch(() => { shardLoading[key] = false; });
+}
+function rerenderWhenIdle() {
+  if (document.activeElement?.matches('input, textarea')) { setTimeout(rerenderWhenIdle, 1500); return; }  // не сбиваем ввод текста
+  render();
+}
 function svgData(name, size, style) {
   const k = `${size}_${style}`;
-  const v = CAND[name]?.[k] ?? ALL?.[name]?.[k];
+  const v = CAND[name]?.[k] ?? ALL?.[name]?.[k] ?? SHARDS[shardKey(name)]?.[name]?.[k];
   if (v) return v;
+  if (!ALL) ensureShard(name);
   const p = PREV[name]; return p && p[0] === style && p[1] === size ? p[2] : null;
 }
 function svgImg(name, size, style) {
