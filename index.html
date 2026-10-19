@@ -62,7 +62,8 @@ h2.secttl { margin:22px 0 8px; font-size:17px; text-wrap:balance; } h2.secttl sm
 .tiles { display:flex; gap:8px; margin:8px 0; }
 .tile { min-width:84px; min-height:84px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:8px; padding:8px; }
 .tile.light { background:var(--paper); } .tile.dark { background:var(--night); border-color:var(--night); }
-.tile img { max-width:none; } .tile.dark img.tpl { filter:invert(1); }
+.tile img { max-width:120px; max-height:120px; height:auto; object-fit:contain; } .tile.dark img.tpl { filter:invert(1); }
+.tile img.mini { max-width:36px; max-height:36px; height:auto; }
 .cap { font-size:11px; color:var(--mut); }
 details summary { cursor:pointer; color:var(--acc); font-size:12px; } details ul { margin:4px 0; padding-left:18px; font-size:11px; color:var(--mut); overflow-wrap:anywhere; }
 .cfgnote { font-size:12px; background:var(--warn-soft); border:1px solid var(--warn-line); border-radius:6px; padding:6px 8px; margin-top:6px; overflow-wrap:anywhere; }
@@ -467,7 +468,7 @@ function renderCompare() {
     nodes.push(el('h2', { class: 'secttl' }, s + ' ', el('small', {}, `${items.length} из ${DATA.rows.filter(r => r.section === s).length}`)), headRow());
     items.forEach(([r, status]) => {
       shown++;
-      const tile = r.old ? el('div', { class: 'tile light' }, el('img', { src: r.old.png3x, width: Math.min(r.old.w, 36), alt: r.icon, class: r.old.template ? '' : '' })) : el('div', { class: 'tile light' }, '—');
+      const tile = r.old ? el('div', { class: 'tile light' }, el('img', { src: r.old.png3x, width: Math.min(r.old.w, 36), alt: r.icon, class: 'mini' })) : el('div', { class: 'tile light' }, '—');
       const first = el('div', { class: 'cmpname' }, tile, el('div', {}, el('b', {}, displayName(r)), el('br'),
         el('span', { class: 'status ' + status }, STATUS_LABEL[status]), ' ',
         el('button', { onclick: () => { useTab(myTab()); setView('pick'); $('#q').value = r.icon; render(); scrollTo(0, 0); } }, 'изменить')));
